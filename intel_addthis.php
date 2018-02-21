@@ -114,6 +114,9 @@ final class Intel_Addthis {
     
     // add _intel_intel_script_info to hook_intel_script_info
     add_filter('intel_intel_script_info', array( $this, 'intel_intel_script_info'));
+
+    // add _intel_intel_script_info to hook_intel_script_info
+    add_filter('intel_intel_script_info_alter', array( $this, 'intel_intel_script_info_alter'));
     
     // Register hook_intel_intel_event_info
     add_filter('intel_intel_event_info', array( $this, 'intel_intel_event_info'));
@@ -243,6 +246,22 @@ final class Intel_Addthis {
       'selectable' => 0,
     );
 
+    return $info;
+  }
+
+  /**
+   * Implements hook_intel_intel_script_info_alter()
+   *
+   * Note addthis script was originally included in core intel plugin then moved
+   * to this one. This is a hack to force settings if core intel plugin is also
+   * settings info.
+   *
+   * @param $info
+   */
+  function intel_intel_script_info_alter($info) {
+    $i = array();
+    $i = $this->intel_intel_script_info($i);
+    $info['addthis'] = $i['addthis'];
     return $info;
   }
   
