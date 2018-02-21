@@ -8,6 +8,9 @@ include_once INTEL_DIR . 'includes/intel.wizard.inc';
 
 include_once INTEL_DIR . 'admin/intel.admin_setup.inc';
 
+/**
+ * Wizard settings for Intelligence for AddThis.
+ */
 function intel_addthis_admin_setup_wizard_info($items = array()) {
   global $intel_addthis;
 
@@ -28,10 +31,10 @@ function intel_addthis_admin_setup_wizard_info($items = array()) {
     'action_img_src' => INTEL_URL . '/images/setup_intel_action.png',
   );
 
-  $info['steps']['default_tracking'] = array(
-    'title' => __('Default tracking', 'intel_addthis'),
-    'action_img_src' => INTEL_URL . '/images/setup_intel_action.png',
-  );
+  // $info['steps']['default_tracking'] = array(
+  //   'title' => __('Default tracking', 'intel_addthis'),
+  //   'action_img_src' => INTEL_URL . '/images/setup_intel_action.png',
+  // );
 
 
   $info['steps']['finish'] = array(
@@ -43,12 +46,18 @@ function intel_addthis_admin_setup_wizard_info($items = array()) {
   return $info;
 }
 
+/**
+ * Instantiates Wizard.
+ */
 function intel_addthis_admin_setup_page() {
   $wizard_info = intel_addthis_admin_setup_wizard_info();
   $form = Intel_Form::drupal_get_form('intel_wizard_form', $wizard_info);
   return Intel_Df::render($form);
 }
 
+/**
+ * 
+ */
 function intel_addthis_admin_setup_intel_plugin($form, &$form_state) {
   $f = array();
 
@@ -64,6 +73,9 @@ function intel_addthis_admin_setup_intel_plugin($form, &$form_state) {
   return $f;
 }
 
+/**
+ * Checks for base Intelligence plug installation.
+ */
 function intel_addthis_admin_setup_intel_plugin_check($form, &$form_state) {
   include_once INTEL_DIR . 'includes/intel.ga.inc';
 
@@ -80,12 +92,18 @@ function intel_addthis_admin_setup_intel_plugin_check($form, &$form_state) {
   return $status;
 }
 
+/**
+ * Validates Intelligence for AddThis installation.
+ */
 function intel_addthis_admin_setup_intel_plugin_validate($form, &$form_state) {
   if (!empty($status['error_msg'])) {
     Intel_Form::form_set_error('none', $status['error_msg']);
   }
 }
 
+/**
+ * Lets user configure base Intelligence API Settings.
+ */
 function intel_addthis_admin_setup_intel_profile($form, &$form_state) {
   include_once INTEL_DIR . 'admin/intel.admin_setup.inc';
   $options = array(
@@ -96,21 +114,33 @@ function intel_addthis_admin_setup_intel_profile($form, &$form_state) {
   return intel_admin_setup_intel_profile($form, $form_state, $options);
 }
 
+/**
+ * Checks GA configurations.
+ */
 function intel_addthis_admin_setup_intel_profile_check($form, &$form_state) {
   include_once INTEL_DIR . 'admin/intel.admin_setup.inc';
   return intel_admin_setup_intel_profile_check($form, $form_state);
 }
 
+/**
+ * Validates base Intelligence profile configuration.
+ */
 function intel_addthis_admin_setup_intel_profile_validate($form, &$form_state, $status) {
   include_once INTEL_DIR . 'admin/intel.admin_setup.inc';
   return intel_admin_setup_intel_profile_validate($form, $form_state, $status);
 }
 
+/**
+ * Locks in profile and prompts for GA Dashboard for WP if not installed.
+ */
 function intel_addthis_admin_setup_intel_profile_submit($form, &$form_state) {
   include_once INTEL_DIR . 'admin/intel.admin_setup.inc';
   return intel_admin_setup_intel_profile_submit($form, $form_state);
 }
 
+/**
+ * Configures AddThis tracking settings.
+ */
 function intel_addthis_admin_setup_default_tracking($form, &$form_state) {
   $f = array();
 
@@ -201,6 +231,9 @@ function intel_addthis_admin_setup_default_tracking_submit($form, &$form_state) 
   update_option('intel_form_track_submission_value_default', $form_state['values']['intel_form_track_submission_value_default']);
 }
 
+/**
+ * Installation success page.
+ */
 function intel_addthis_admin_setup_finish($form, &$form_state) {
   global $intel_addthis;
 
