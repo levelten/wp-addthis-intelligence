@@ -348,7 +348,7 @@ final class Intel_Addthis {
     $output .= '<div class="card-block clearfix">';
 
     $output .= '<p class="lead">';
-    $output .= Intel_Df::t('Try out Example tracking!');
+    $output .= Intel_Df::t('Try out AddThis tracking!');
     //$output .= ' ' . Intel_Df::t('This tutorial will walk you through the essentials of extending Google Analytics using Intelligence to create results oriented analytics.');
     $output .= '</p>';
 
@@ -415,14 +415,14 @@ final class Intel_Addthis {
     $id = -1 * (count($posts) + 1);
 
     $content = '';
-    $content .= __('Example demo placeholder', $this->plugin_un);
+    $content .= __('Google Analytics Intelligence for AddThis Demo', $this->plugin_un);
 
-    //$content .= '[addthis tool="addthis_inline_share_toolbox_3g71"]';
+    $content .= '<p>Enable an AddThis widget <a href="/wp-admin/admin.php?page=addthis_sharing_buttons#/tools">here</a>. Then any clicks to social icons will be tracked in Google Analytics!  </p>';
 
     $posts["$id"] = array(
       'ID' => $id,
       'post_type' => 'page',
-      'post_title' => 'Demo Example',
+      'post_title' => 'AddThis Demo',
       'post_content' => $content,
       'intel_demo' => array(
         'url' => 'intelligence/demo/' . $this->plugin_un,
