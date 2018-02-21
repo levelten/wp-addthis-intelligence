@@ -118,6 +118,9 @@ final class Intel_Addthis {
     
     // add _intel_intel_script_info to hook_intel_script_info
     add_filter('intel_intel_script_info', array( $this,'_intel_intel_script_info'));
+    
+    // Register hook_intel_intel_event_info
+    add_filter('intel_intel_event_info', array( $this,'intel_addthis_intel_intel_event_info'));
 
     // Register hook_intel_menu()
     add_filter('intel_menu', array( $this, 'intel_menu' ));
@@ -244,6 +247,69 @@ final class Intel_Addthis {
     );
 
     return $info;
+  }
+  
+  /**
+   * Implements hook_intel_intel_event_info
+   */
+  function intel_addthis_intel_intel_event_info($event = array()) {
+    $event['intel_addthis_share_click'] = array(
+      'title' => Intel_Df::t('AddThis share click'),
+      //'category' => Intel_Df::t('Social share'),
+      'description' => Intel_Df::t('Click on AddThis share button'),
+      'mode' => 'valued',
+      //'valued_event' => 1,
+      'value' => 10,
+      //'selector' => '.io-social-share-track',
+      'on_event' => 'click',
+      'enable' => 1,
+      'overridable' => array(
+        'selector' => 1,
+      ),
+      'social_action' => 'share',
+      'trigger_alter_callback' => 'intel_addthis:eventHandlerAlter',
+      'trigger_callback' => 'intel_addthis:eventHandler',
+      //'js_setting' => 1,
+    );
+    
+    $event['intel_addthis_follow_click'] = array(
+      'title' => Intel_Df::t('AddThis follow click'),
+      //'category' => Intel_Df::t('Social share'),
+      'description' => Intel_Df::t('Click on AddThis follow button'),
+      'mode' => 'valued',
+      //'valued_event' => 1,
+      'value' => 10,
+      //'selector' => '.io-social-share-track',
+      'on_event' => 'click',
+      'enable' => 1,
+      'overridable' => array(
+        'selector' => 1,
+      ),
+      'social_action' => 'follow',
+      'trigger_alter_callback' => 'intel_addthis:eventHandlerAlter',
+      'trigger_callback' => 'intel_addthis:eventHandler',
+      //'js_setting' => 1,
+    );
+    $event['intel_addthis_clickback_click'] = array(
+      'title' => Intel_Df::t('AddThis clickback'),
+      //'category' => Intel_Df::t('Social share'),
+      'description' => Intel_Df::t('Clickback from Addthis'),
+      'mode' => 'valued',
+      //'valued_event' => 1,
+      'value' => 10,
+      //'selector' => '.io-social-share-track',
+      'on_event' => 'click',
+      'enable' => 1,
+      'overridable' => array(
+        'selector' => 1,
+      ),
+      'social_action' => 'clickback',
+      'trigger_alter_callback' => 'intel_addthis:eventHandlerAlter',
+      'trigger_callback' => 'intel_addthis:eventHandler',
+      //'js_setting' => 1,
+    );
+    
+    return $event;
   }
 
   /*
