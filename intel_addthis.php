@@ -30,7 +30,7 @@ if ( ! defined( 'WPINC' ) ) {
   die;
 }
 
-define('INTEL_ADDTHIS_VER', '1.0.0.0-dev');
+define('INTEL_ADDTHIS_VER', '1.0.0');
 
 /**
  * Class Intel_Example
@@ -39,11 +39,19 @@ final class Intel_Addthis {
 
   protected $version = INTEL_ADDTHIS_VER;
 
+  /**
+   * intel_plugin_info
+   *
+   * @var array
+   */
   public $plugin_info = array();
 
+  /**
+   * Plugin unique name
+   *
+   * @var string
+   */
   public $plugin_un = 'intel_addthis';
-
-
 
   /**
    * Plugin Directory
@@ -179,7 +187,7 @@ final class Intel_Addthis {
       // The extended plugin's unique name
       'extends_plugin_un' => 'addthis',
       // the extended plugin's title
-      'extends_plugin_title' => __('Addthis', 'addthis'),
+      'extends_plugin_title' => __('AddThis', 'addthis'),
     );
     return $info;
   }
@@ -270,7 +278,7 @@ final class Intel_Addthis {
   function intel_intel_event_info($event = array()) {
     $event['intel_addthis_share_click'] = array(
       'title' => Intel_Df::t('AddThis share click'),
-      //'category' => Intel_Df::t('Social share'),
+      'category' => Intel_Df::t('Social share click'),
       'description' => Intel_Df::t('Click on AddThis share button'),
       'mode' => 'valued',
       //'valued_event' => 1,
@@ -287,7 +295,7 @@ final class Intel_Addthis {
     
     $event['intel_addthis_follow_click'] = array(
       'title' => Intel_Df::t('AddThis follow click'),
-      //'category' => Intel_Df::t('Social share'),
+      'category' => Intel_Df::t('Social follow click'),
       'description' => Intel_Df::t('Click on AddThis follow button'),
       'mode' => 'valued',
       //'valued_event' => 1,
@@ -303,7 +311,7 @@ final class Intel_Addthis {
     );
     $event['intel_addthis_clickback_click'] = array(
       'title' => Intel_Df::t('AddThis clickback'),
-      //'category' => Intel_Df::t('Social share'),
+      'category' => Intel_Df::t('Social share clickback'),
       'description' => Intel_Df::t('Clickback from AddThis'),
       'mode' => 'valued',
       //'valued_event' => 1,

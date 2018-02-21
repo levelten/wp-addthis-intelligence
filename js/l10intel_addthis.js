@@ -106,7 +106,6 @@ function L10iAddthis(_ioq, config) {
         if (_ioq.eventDefsIndex['intel_addthis_share_click'] && _ioq.eventDefs[_ioq.eventDefsIndex['intel_addthis_share_click']]) {
             evtDef = _ioq.eventDefs[_ioq.eventDefsIndex['intel_addthis_share_click']];
         }
-
         var ga_event = {
             'eventCategory': (evtDef.eventCategory) ? evtDef.eventCategory : "Social share click!",
             'eventAction': (typeof addthis.util.getServiceName(evt.data.service) != 'undefined') ? addthis.util.getServiceName(evt.data.service) : evt.data.service,

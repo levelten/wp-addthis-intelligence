@@ -1,5 +1,5 @@
 === Intelligence for AddThis ===
-Contributors: tomdude
+Contributors: tomdude, jerads
 Donate link: getlevelten.com/blog/tom
 Tags: AddThis, analytics, Google Analytics, social metrics, social tracking
 Requires at least: 4.5
