@@ -87,8 +87,7 @@ final class Intel_Addthis {
   }
 
   /**
-   * constructor.
-   *
+   * Constructor.
    */
   public function __construct() {
     global $wp;
@@ -98,9 +97,6 @@ final class Intel_Addthis {
     $this->dir = plugin_dir_path(__FILE__);
 
     $this->url = plugin_dir_url(__FILE__);
-
-    // Register hook_admin_menu()
-    //add_filter('admin_menu', array( $this, 'admin_menu' ));
 
     /*
      * Intelligence hooks
@@ -170,7 +166,6 @@ final class Intel_Addthis {
       // Shorter version of title used when reduced characters are desired
       'plugin_title_short' => __('GA Intelligence for AddThis', $this->plugin_un),
       // Main plugin file
-      //TODO
       'plugin_file' => 'intel_addthis.php', // Main plugin file
       // The server path to the plugin files directory
       'plugin_dir' => $this->dir,
@@ -181,9 +176,9 @@ final class Intel_Addthis {
       'update_file' => 'intel_addthis.install', // default [plugin_un].install
       // If this plugin extends a plugin other than Intelligience, include that
       // plugin's info in 'extends_' properties
-      // The extends plugin unique name
+      // The extended plugin's unique name
       'extends_plugin_un' => 'addthis',
-      // the extends plugin title
+      // the extended plugin's title
       'extends_plugin_title' => __('Addthis', 'addthis'),
     );
     return $info;
@@ -210,10 +205,10 @@ final class Intel_Addthis {
    * @return array
    */
   public function intel_menu_info($items = array()) {
-    // route for Admin > Intelligence > Settings > Setup > Addthis
+    // route for Admin > Intelligence > Settings > Setup > AddThis
     $items['admin/config/intel/settings/setup/' . $this->plugin_un] = array(
       'title' => 'Setup',
-      'description' => Intel_Df::t('Intelligence Addthis initial plugin setup'),
+      'description' => Intel_Df::t('Google Analytics Intelligence for AddThis initial setup'),
       'page callback' => $this->plugin_un . '_admin_setup_page',
       'access callback' => 'user_access',
       'access arguments' => array('admin intel'),
@@ -221,7 +216,7 @@ final class Intel_Addthis {
       'file' => 'admin/' . $this->plugin_un . '.admin_setup.inc',
       'file path' => $this->dir,
     );
-    // rout for Admin > Intelligence > Help > Demo > Example
+    // route for Admin > Intelligence > Help > Demo > AddThis
     $items['admin/help/demo/' . $this->plugin_un] = array(
       'title' => $this->plugin_info['extends_plugin_title'],
       'page callback' => array($this, 'intel_admin_help_demo_page'),
@@ -236,10 +231,12 @@ final class Intel_Addthis {
   
   /**
    * Implements hook_intel_intel_script_info()
+   * 
+   * Adds AddThis tracking script to the site.
    */
   function intel_intel_script_info($info = array()) {
     $info['addthis'] = array(
-      'title' => Intel_Df::t('AddThis (TESTING)'),
+      'title' => Intel_Df::t('AddThis'),
       'description' => Intel_Df::t('Tracks AddThis shares and clickbacks.'),
       'path' => $this->url . 'js/l10intel_addthis.js',
       'enabled' => 1,
@@ -252,7 +249,7 @@ final class Intel_Addthis {
   /**
    * Implements hook_intel_intel_script_info_alter()
    *
-   * Note addthis script was originally included in core intel plugin then moved
+   * Note: addthis script was originally included in core intel plugin then moved
    * to this one. This is a hack to force settings if core intel plugin is also
    * settings info.
    *
@@ -267,6 +264,8 @@ final class Intel_Addthis {
   
   /**
    * Implements hook_intel_intel_event_info
+   *
+   * Adds configurable events attached to AddThis interactions. 
    */
   function intel_intel_event_info($event = array()) {
     $event['intel_addthis_share_click'] = array(
@@ -283,8 +282,6 @@ final class Intel_Addthis {
         'selector' => 1,
       ),
       'social_action' => 'share',
-      'trigger_alter_callback' => 'intel_addthis:eventHandlerAlter',
-      'trigger_callback' => 'intel_addthis:eventHandler',
       //'js_setting' => 1,
     );
     
@@ -302,14 +299,12 @@ final class Intel_Addthis {
         'selector' => 1,
       ),
       'social_action' => 'follow',
-      'trigger_alter_callback' => 'intel_addthis:eventHandlerAlter',
-      'trigger_callback' => 'intel_addthis:eventHandler',
       //'js_setting' => 1,
     );
     $event['intel_addthis_clickback_click'] = array(
       'title' => Intel_Df::t('AddThis clickback'),
       //'category' => Intel_Df::t('Social share'),
-      'description' => Intel_Df::t('Clickback from Addthis'),
+      'description' => Intel_Df::t('Clickback from AddThis'),
       'mode' => 'valued',
       //'valued_event' => 1,
       'value' => 10,
@@ -320,8 +315,6 @@ final class Intel_Addthis {
         'selector' => 1,
       ),
       'social_action' => 'clickback',
-      'trigger_alter_callback' => 'intel_addthis:eventHandlerAlter',
-      'trigger_callback' => 'intel_addthis:eventHandler',
       //'js_setting' => 1,
     );
     
@@ -329,7 +322,7 @@ final class Intel_Addthis {
   }
 
   /*
-   * Provides an Intelligence > Help > Demo > Example page
+   * Provides an Intelligence > Help > Demo > AddThis Example page
    */
   public function intel_admin_help_demo_page() {
     $output = '';
@@ -429,90 +422,6 @@ final class Intel_Addthis {
     );
 
     return $posts;
-  }
-
-  /**
-   * Implements hook_admin_menu()
-   */
-  public function admin_menu() {
-    // Custom sub-page for Intel settings
-    add_submenu_page('addthis', esc_html__("Addthis", $this->plugin_un), esc_html__("Intelligence settings", $this->plugin_un), 'manage_options', $this->plugin_un, array($this, 'addthis_settings_page'));
-
-    // Intel setup checks. Alternative to using hook_wp_loaded()
-    /*
-    if (!$this->is_intel_installed()) {
-      require_once( $this->dir . $this->plugin_un . '.setup.inc' );
-      intel_example_addon_setup()->admin_menu_plugin_setup();
-    }
-    */
-  }
-
-  /*
-   * Settings page for Admin > Example > Intelligence
-   */
-  public function addthis_settings_page() {
-    $screen_vars = array(
-      'title' => __("Intelligence settings", $this->plugin_un),
-    );
-    if (!$this->is_intel_installed('min')) {
-      require_once( $this->dir . $this->plugin_un . '.setup.inc' );
-      $screen_vars['content'] = intel_example_addon_setup()->get_plugin_setup_notice(array('inline' => 1));
-      print intel_setup_theme('setup_screen', $screen_vars);
-      return;
-    }
-
-    $items = array();
-
-    if($this->is_intel_installed()) {
-      $connect_desc = __('Connected');
-    }
-    else {
-      $connect_desc = __('Not connected.', $this->plugin_un);
-      $connect_desc .= ' ' . sprintf(
-          __( ' %sSetup Intelligence%s', $this->plugin_un ),
-          '<a href="' . wpcf7_intel_setup()->plugin_setup_url() . '" class="button">', '</a>'
-        );
-    }
-
-    $items[] = '<table class="form-table">';
-    $items[] = '<tbody>';
-    $items[] = '<tr>';
-    $items[] = '<th>' . esc_html__( 'Intelligence API', $this->plugin_un ) . '</th>';
-    $items[] = '<td>' . $connect_desc . '</td>';
-    $items[] = '</tr>';
-
-    if ($this->is_intel_installed()) {
-      $eventgoal_options = intel_get_form_submission_eventgoal_options();
-      $default_name = get_option('intel_form_track_submission_default', 'form_submission');
-      $value = !empty($eventgoal_options[$default_name]) ? $eventgoal_options[$default_name] : Intel_Df::t('(not set)');
-      $l_options = Intel_Df::l_options_add_destination('wp-admin/admin.php?page=' . $this->plugin_un);
-      $l_options['attributes'] = array(
-        'class' => array('button'),
-      );
-      $value .= ' ' . Intel_Df::l(esc_html__('Change', $this->plugin_un), 'admin/config/intel/settings/form/default_tracking', $l_options);
-      $items[] = '<tr>';
-      $items[] = '<th>' . esc_html__( 'Default submission event/goal', $this->plugin_un ) . '</th>';
-      $items[] = '<td>' . $value . '</td>';
-      $items[] = '</tr>';
-
-      $default_value = get_option('intel_form_track_submission_value_default', '');
-      $items[] = '<tr>';
-      $items[] = '<th>' . esc_html__( 'Default submission value', $this->plugin_un ) . '</th>';
-      $items[] = '<td>' . (!empty($default_value) ? $default_value : Intel_Df::t('(default)')) . '</td>';
-      $items[] = '</tr>';
-    }
-    $items[] = '</tbody>';
-    $items[] = '</table>';
-
-    $output = implode("\n", $items);
-
-    $vars = array(
-      'title' => __( 'Intelligence Settings', $this->plugin_un ),
-      'content' => $output,
-    );
-    $output = Intel_Df::theme('wp_screen', $vars);
-
-    print $output;
   }
 }
 

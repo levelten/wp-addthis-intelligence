@@ -5,7 +5,7 @@
  *
  * @since      1.0.0
  *
- * @package    Intel
+ * @package    Intelligence
  */
 
 if (!is_callable('intel_setup')) {
