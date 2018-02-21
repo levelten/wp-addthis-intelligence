@@ -7,7 +7,6 @@ function L10iAddthis(_ioq, config) {
 
     this.init = function init() {
         var waits, i;
-
         io('log', 'L10iAddthis.init()');
         if ((typeof addthis != 'object') || (typeof addthis.addEventListener != 'function')) {
 
@@ -102,36 +101,53 @@ function L10iAddthis(_ioq, config) {
         if (ignore[evt.data.service]) {
             return;
         }
+
+        var evtDef = {};
+        if (_ioq.eventDefsIndex['intel_addthis_share_click'] && _ioq.eventDefs[_ioq.eventDefsIndex['intel_addthis_share_click']]) {
+            evtDef = _ioq.eventDefs[_ioq.eventDefsIndex['intel_addthis_share_click']];
+        }
+
         var ga_event = {
-            'eventCategory': "Social share click!",
+            'eventCategory': (evtDef.eventCategory) ? evtDef.eventCategory : "Social share click!",
             'eventAction': (typeof addthis.util.getServiceName(evt.data.service) != 'undefined') ? addthis.util.getServiceName(evt.data.service) : evt.data.service,
             'eventLabel': "[[systemAlias]]",
-            'eventValue': io('get', 'config.scorings.events.addthis_social_share', 0),
-            'nonInteraction': false,
+            'eventValue': (evtDef.eventValue) ? evtDef.eventValue : io('get', 'config.scorings.events.addthis_social_share', 0),
+            'nonInteraction': !_ioq.isNull(evtDef.nonInteraction) ? evtDef.nonInteraction : false,
             'eid': 'socialShareClick'
         };
+
         io('event', ga_event);
     };
 
     this.onSocialShareClickback = function (evt) {
+        var evtDef = {};
+        if (_ioq.eventDefsIndex['intel_addthis_clickback_click'] && _ioq.eventDefs[_ioq.eventDefsIndex['intel_addthis_clickback_click']]) {
+            evtDef = _ioq.eventDefs[_ioq.eventDefsIndex['intel_addthis_clickback_click']];
+        }
+
         var ga_event = {
-            'eventCategory': "Social share clickback!",
+            'eventCategory': (evtDef.eventCategory) ? evtDef.eventCategory : "Social share clickback!",
             'eventAction': (typeof addthis.util.getServiceName(evt.data.service) != 'undefined') ? addthis.util.getServiceName(evt.data.service) : evt.data.service,
             'eventLabel': "[[systemAlias]]",
-            'eventValue': io('get', 'config.scorings.events.addthis_social_share_clickback', 0),
-            'nonInteraction': false,
+            'eventValue': (evtDef.eventValue) ? evtDef.eventValue : io('get', 'config.scorings.events.addthis_social_share_clickback', 0),
+            'nonInteraction': !_ioq.isNull(evtDef.nonInteraction) ? evtDef.nonInteraction : false,
             'eid': 'socialShareClickback'
         };
         io('event', ga_event);
     };
 
     this.onSocialFollow = function (evt) {
+        var evtDef = {};
+        if (_ioq.eventDefsIndex['intel_addthis_follow_click'] && _ioq.eventDefs[_ioq.eventDefsIndex['intel_addthis_follow_click']]) {
+            evtDef = _ioq.eventDefs[_ioq.eventDefsIndex['intel_addthis_follow_click']];
+        }
+
         var ga_event = {
-            'eventCategory': "Social profile click!",
+            'eventCategory': (evtDef.eventCategory) ? evtDef.eventCategory : "Social profile click!",
             'eventAction': (typeof addthis.util.getServiceName(evt.data.service) != 'undefined') ? addthis.util.getServiceName(evt.data.service) : evt.data.service,
             'eventLabel': (evt.data.url) ? evt.data.url : "(not set)",
-            'eventValue': io('get', 'config.scorings.events.addthis_social_follow', 0),
-            'nonInteraction': false,
+            'eventValue': (evtDef.eventValue) ? evtDef.eventValue : io('get', 'config.scorings.events.addthis_social_follow', 0),
+            'nonInteraction': !_ioq.isNull(evtDef.nonInteraction) ? evtDef.nonInteraction : false,
             'eid': 'socialProfileClick'
         };
         io('event', ga_event);

@@ -43,17 +43,3 @@
     text-shadow: none !important;
 }
 
-.intel-setup div.logo {
-    clear: both;
-    content: "";
-    display: block;
-    background-image: url(../images/icon-128x128.png);
-    background-size: 128px 128px;
-    background-repeat: no-repeat;
-    background-position: 0 45%;
-    width: 128px;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 5px;
-}
