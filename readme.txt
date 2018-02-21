@@ -1,37 +1,58 @@
-=== Intelligence Example Add-On ===
+=== Google Analytics Intelligence for AddThis ===
 Contributors: tomdude
 Donate link: getlevelten.com/blog/tom
-Tags: analytics, contact, contact form, form, google analytics, marketing, metrics, stats, tracking, web form
+Tags: AddThis, analytics, Google Analytics, social metrics, social tracking
 Requires at least: 4.5
-Tested up to: 4.9.2
-Stable tag: 1.0.0.0-dev
+Tested up to: 4.9.4
+Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Example Intelligence Add-On. Good start for add-ons.
+Automates tracking of AddThis interactions as Google Analytics events and goals.
 
 == Description ==
+
+Automates tracking of AddThis shares, clickbacks, and follows as Google Analytics events and goals.
+
+#### Core Features
+
+* Tracks [AddThis share buttons](https://wordpress.org/plugins/addthis)
+* Tracks clickbacks
+* Tracks [AddThis follow buttons](https://wordpress.org/plugins/addthis-follow)
+* Custom tracking as Google Analytics events or goals
+* Custom goal values
+* Create GA goals directly from WordPress
+* No coding required
+* No advanced Google Analytics skills needed
+* No Google Tag Manager setup needed
+* 5 minute installation
+
+#### Enhanced Google Analytics
+
+The plugin integrates with the Intelligence API to automate Google Analytics goal management in WordPress. Intelligence is a framework for enhancing Google Analytics.
+
+To learn more about Intelligence for WordPress visit [intelligencewp.com](https://intelligencewp.com)
 
 == Installation ==
 
 === Install Files Within WordPress ===
 
 1. Visit 'Plugins > Add New'
-1. Search for 'Intelligence Example'
-1. Activate Intelligence Example from your Plugins page.
+1. Search for 'Intelligence AddThis'
+1. Activate Google Analytics Intelligence for AddThis from your Plugins page.
 1. Go to "plugin setup" below.
 
 === Install Files Manually ===
 
-1. Download the [Intelligence Example plugin](https://wordpress.org/plugins/intelligence-example) and the [Intelligence plugin](https://wordpress.org/plugins/intelligence)
-1. Add `intelligence-example` and `intelligence` folders to the `/wp-content/plugins/` directory
-1. Activate the Intelligence Example plugin through the 'Plugins' menu in WordPress
+1. Download the [Google Analytics Intelligence for AddThis](https://wordpress.org/plugins/intelligence-addthis) and the [Intelligence plugin](https://wordpress.org/plugins/intelligence)
+1. Add `intelligence-addthis` and `intelligence` folders to the `/wp-content/plugins/` directory
+1. Activate the GA Intelligence for AddThis plugin through the 'Plugins' menu in WordPress
 1. Go to "plugin setup" below.
 
 === Plugin Setup ===
 
-1. You should see a notice at the top of the Plugins page. Click "Setup plugin" to launch the setup wizard. You can also launch the wizard from the Contact Form 7 settings, 'Contact > Intelligence'.
-1. Go through the setup wizard and set up the plugin for your site.
+1. You should see a notice at the top of the Plugins page. Click "Setup plugin" to launch the setup wizard.
+1. Go through the setup wizard to complete plugin configuration for your site.
 1. You're done!
 
 === Popular options ===
