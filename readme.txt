@@ -1,4 +1,4 @@
-=== Google Analytics Intelligence for AddThis ===
+=== Intelligence for AddThis ===
 Contributors: tomdude
 Donate link: getlevelten.com/blog/tom
 Tags: AddThis, analytics, Google Analytics, social metrics, social tracking

@@ -12,7 +12,7 @@
 * @package           Intelligence
 *
 * @wordpress-plugin
-* Plugin Name:       Google Analytics Intelligence for AddThis
+* Plugin Name:       Intelligence for AddThis
 * Plugin URI:        https://wordpress.org/plugins/intelligence-example
 * Description:       Automates Google Analytics tracking for AddThis.
 * Version:           1.0.0.0-dev
