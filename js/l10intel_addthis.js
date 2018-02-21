@@ -151,33 +151,6 @@ function L10iAddthis(_ioq, config) {
         };
         io('event', ga_event);
     };
-    
-    this.eventHandlerAlter = function eventHandlerAlter (evtDef, $target, event, options) {
-        var a, href, parsedHref;
-        if (!evtDef.socialNetwork) {
-            a = $target.attr('data-io-social-network');
-            if (a) {
-                evtDef.socialNetwork = a;
-            }
-        }
-        if (!evtDef.eventAction && evtDef.socialNetwork) {
-            evtDef.eventAction = evtDef.socialNetwork;
-        }
-    };
-
-    this.eventHandler = function eventHandler(evtDef, $target, event, options) {
-        if (evtDef.socialNetwork && evtDef.socialAction) {
-            var socialDef = {
-                socialNetwork: evtDef.socialNetwork,
-                socialAction: evtDef.socialAction,
-                socialTarget: _ioq.location.href,
-                hitType: 'social'
-            };
-            if (!options.test) {
-                io('ga.send', socialDef);
-            }
-        }
-    };
 
     this.init();
 }
