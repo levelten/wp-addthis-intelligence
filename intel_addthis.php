@@ -426,6 +426,8 @@ final class Intel_Addthis {
       'post_content' => $content,
       'intel_demo' => array(
         'url' => 'intelligence/demo/' . $this->plugin_un,
+        // don't let user override page content
+        'overridable' => 0,
       ),
     );
 
