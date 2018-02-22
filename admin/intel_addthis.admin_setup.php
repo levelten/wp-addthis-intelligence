@@ -63,7 +63,7 @@ function intel_addthis_admin_setup_intel_plugin($form, &$form_state) {
 
   include_once intel_addthis()->dir . 'intel_addthis.setup.php';
 
-  $instructions = intel_addthis_setup()->intel_install_instructions();
+  $instructions = intel_addthis_setup()->get_intel_install_instructions();
 
   $f['instructions'] = array(
     '#type' => 'markup',
@@ -253,7 +253,7 @@ function intel_addthis_admin_setup_finish($form, &$form_state) {
   $items[] = '<h3>' . Intel_Df::t('Congratulations') . '</h3>';
 
   $items[] = '<p>';
-  $items[] = $intel_addthis->plugin_info['plugin_title'] . ' ' . __(' is now being tracked!', 'intel_addthis');
+  $items[] = $intel_addthis->plugin_info['extends_plugin_title'] . ' ' . __(' social interactions are now being tracked!', 'intel_addthis');
   $items[] = '</p>';
 
   $items[] = '<p>';

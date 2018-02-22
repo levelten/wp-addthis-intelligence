@@ -337,9 +337,11 @@ if (!is_callable('intel_setup')) {
     $theme_info = apply_filters('intel_theme_info', $theme_info);
     $theme_info = apply_filters('intel_theme_info_alter', $theme_info);
 
+    $func_prefix = !empty($theme_info[$hook]['function_prefix']) ? $theme_info[$hook]['function_prefix'] . '_' : '';
+
     // call preprocess functions
-    if (is_callable('template_preprocess_' . $hook)) {
-      call_user_func_array('template_preprocess_' . $hook, array(&$variables));
+    if (is_callable($func_prefix . 'template_preprocess_' . $hook)) {
+      call_user_func_array($func_prefix . 'template_preprocess_' . $hook, array(&$variables));
     }
 
     // fire hook_intel_preprocess_HOOK()
@@ -347,21 +349,17 @@ if (!is_callable('intel_setup')) {
     $variables = apply_filters('intel_preprocess_' . $hook, $variables);
 
     // call process functions
-    if (is_callable('template_process_' . $hook)) {
-      call_user_func_array('template_process_' . $hook, array(&$variables));
+    if (is_callable($func_prefix . 'template_process_' . $hook)) {
+      call_user_func_array($func_prefix . 'template_process_' . $hook, array(&$variables));
     }
 
     // fire hook_intel_process_HOOK()
     // allow plugins to preprocess variables
     $variables = apply_filters('intel_process_' . $hook, $variables);
 
-    if (!isset($theme_info[$hook]['function']) && isset($theme_info[$hook]['callback'])) {
-      $theme_info[$hook]['function'] = $theme_info[$hook]['callback'];
-    }
-
-    if (!empty($theme_info[$hook]['function'])) {
-      $func = $theme_info[$hook]['function'];
-      if (is_string($func) && is_callable($func)) {
+    if (!empty($info['function']) || !empty($info['callback'])) {
+      $func = !empty($info['callback']) ? $info['callback'] : $func_prefix . $info['function'];
+      if (is_callable($func)) {
         $output = call_user_func_array($func, array(&$variables));
       }
     }
@@ -379,7 +377,8 @@ if (!is_callable('intel_setup')) {
         'content' => NULL,
         'help_tab' => array(),
       ),
-      'callback' => 'theme_setup_screen',
+      'function' => 'theme_setup_screen',
+      'function_prefix' => 'intel_setup',
     );
     $themes['setup_welcome_panel'] = array(
       'variables' => array(
@@ -389,19 +388,21 @@ if (!is_callable('intel_setup')) {
         'panel_header' => NULL,
         'panel_footer' => NULL,
       ),
-      'callback' => 'theme_setup_welcome_panel',
+      'function' => 'theme_setup_welcome_panel',
+      'function_prefix' => 'intel_setup',
     );
     $themes['install_plugin_card'] = array(
       'variables' => array(
       ),
-      'callback' => 'theme_install_plugin_card',
+      'function' => 'theme_install_plugin_card',
+      'function_prefix' => 'intel_setup',
     );
     return $themes;
   }
   // Register hook_theme()
   add_filter('intel_theme_info', 'intel_setup_theme_info');
 
-  function theme_setup_screen(&$vars) {
+  function intel_setup_theme_setup_screen(&$vars) {
     global $intel_wp_screen;
 
     $screen = get_current_screen();
@@ -432,7 +433,7 @@ if (!is_callable('intel_setup')) {
     return $output;
   }
 
-  function theme_setup_welcome_panel(&$vars) {
+  function intel_setup_theme_setup_welcome_panel(&$vars) {
     $output = '';
     $class = 'welcome-panel intel-wp-welcome-panel';
     if (!empty($vars['class'])) {
@@ -486,7 +487,7 @@ if (!is_callable('intel_setup')) {
     return $output;
   }
 
-  function template_preprocess_install_plugin_card(&$vars = array()) {
+  function intel_setup_template_preprocess_install_plugin_card(&$vars = array()) {
     include_once(ABSPATH . 'wp-admin/includes/plugin-install.php'); //for plugins_api..
 
     $plugin_slug = !empty($vars['plugin_slug']) ? $vars['plugin_slug'] : 'intelligence';
@@ -647,7 +648,7 @@ if (!is_callable('intel_setup')) {
 
 
 
-  function theme_install_plugin_card($vars) {
+  function intel_setup_theme_install_plugin_card($vars) {
     wp_enqueue_style('intel-install-plugin-card', intel_setup()->url . 'css/intel.install_plugin_card.css');
 
     wp_enqueue_script('plugin-install');
@@ -710,14 +711,6 @@ if (!is_callable('intel_setup')) {
    */
   function intel_setup_process_install_plugin_card($vars) {
     return template_preprocess_intel_install_plugin_card($vars);
-  }
-
-  /**
-   * deprecated - function renamed to
-   * @param $vars
-   */
-  function intel_setup_theme_install_plugin_card($vars) {
-    return theme_intel_install_plugin_card($vars);
   }
 
   function intel_setup_install_intel() {
