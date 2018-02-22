@@ -12,7 +12,7 @@
 if (!is_callable('intel_setup')) {
 
   class Intel_Setup {
-    const VERSION = '1.0.2';
+    const VERSION = '1.0.3';
 
     /**
      * @var Intel_Setup
@@ -101,7 +101,7 @@ if (!is_callable('intel_setup')) {
      * Implements hook_admin_menu() when plugin is not installed.
      */
     public function admin_menu_plugin_setup() {
-      global $wp_version;
+      global $admin_page_hooks;
 
       $text_domain = $plugin_un = $this->plugin_un;
 
@@ -110,8 +110,11 @@ if (!is_callable('intel_setup')) {
         return;
       }
 
-      add_menu_page(esc_html__("Intelligence", $text_domain), esc_html__("Intelligence", $text_domain), 'manage_options', 'intel_admin', array($this, 'plugin_setup_page'), version_compare($wp_version, '3.8.0', '>=') ? 'dashicons-analytics' : '');
-      add_submenu_page('intel_admin', esc_html__("Setup", $text_domain), esc_html__("Setup", $text_domain), 'manage_options', 'intel_config', array($this, 'plugin_setup_page'));
+      // check to see if admin page has already been added
+      if (empty($admin_page_hooks['intel_admin'])) {
+        add_menu_page(esc_html__("Intelligence", $text_domain), esc_html__("Intelligence", $text_domain), 'manage_options', 'intel_admin', array($this, 'plugin_setup_page'), 'dashicons-analytics');
+        add_submenu_page('intel_admin', esc_html__("Setup", $text_domain), esc_html__("Setup", $text_domain), 'manage_options', 'intel_config', array($this, 'plugin_setup_page'));
+      }
 
       // setup redirect after plugin install back to setup wizard
       add_action('activated_plugin', array( $this, 'activated_plugin' ));
@@ -200,6 +203,7 @@ if (!is_callable('intel_setup')) {
       if (!empty($_GET['plugin']) && $_GET['plugin'] != $this->plugin_un) {
         return;
       }
+
       // initialize setup state option
       $intel_setup = get_option('intel_setup', array());
       $intel_setup['active_path'] = 'admin/config/intel/settings/setup/' . $this->plugin_un;
@@ -336,8 +340,12 @@ if (!is_callable('intel_setup')) {
     $theme_info = array();
     $theme_info = apply_filters('intel_theme_info', $theme_info);
     $theme_info = apply_filters('intel_theme_info_alter', $theme_info);
+    if (empty($theme_info[$hook])) {
+      return '';
+    }
+    $info = $theme_info[$hook];
 
-    $func_prefix = !empty($theme_info[$hook]['function_prefix']) ? $theme_info[$hook]['function_prefix'] . '_' : '';
+    $func_prefix = !empty($info['function_prefix']) ? $info['function_prefix'] . '_' : '';
 
     // call preprocess functions
     if (is_callable($func_prefix . 'template_preprocess_' . $hook)) {
