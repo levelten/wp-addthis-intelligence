@@ -4,9 +4,9 @@
  * Admin configuration management
  */
 
-include_once INTEL_DIR . 'includes/intel.wizard.inc';
+include_once INTEL_DIR . 'includes/intel.wizard.php';
 
-include_once INTEL_DIR . 'admin/intel.admin_setup.inc';
+include_once INTEL_DIR . 'admin/intel.admin_setup.php';
 
 /**
  * Wizard settings for Intelligence for AddThis.
@@ -61,7 +61,7 @@ function intel_addthis_admin_setup_page() {
 function intel_addthis_admin_setup_intel_plugin($form, &$form_state) {
   $f = array();
 
-  include_once intel_addthis()->dir . 'intel_addthis.setup.inc';
+  include_once intel_addthis()->dir . 'intel_addthis.setup.php';
 
   $instructions = intel_addthis_setup()->intel_install_instructions();
 
@@ -77,7 +77,7 @@ function intel_addthis_admin_setup_intel_plugin($form, &$form_state) {
  * Checks for base Intelligence plug installation.
  */
 function intel_addthis_admin_setup_intel_plugin_check($form, &$form_state) {
-  include_once INTEL_DIR . 'includes/intel.ga.inc';
+  include_once INTEL_DIR . 'includes/intel.ga.php';
 
   $status = array();
 
@@ -105,7 +105,7 @@ function intel_addthis_admin_setup_intel_plugin_validate($form, &$form_state) {
  * Lets user configure base Intelligence API Settings.
  */
 function intel_addthis_admin_setup_intel_profile($form, &$form_state) {
-  include_once INTEL_DIR . 'admin/intel.admin_setup.inc';
+  include_once INTEL_DIR . 'admin/intel.admin_setup.php';
   $options = array(
     'imapi_property_setup' => array(
       'callback_destination' => Intel_Df::url('admin/config/intel/settings/setup/intel_addthis'),
@@ -118,7 +118,7 @@ function intel_addthis_admin_setup_intel_profile($form, &$form_state) {
  * Checks GA configurations.
  */
 function intel_addthis_admin_setup_intel_profile_check($form, &$form_state) {
-  include_once INTEL_DIR . 'admin/intel.admin_setup.inc';
+  include_once INTEL_DIR . 'admin/intel.admin_setup.php';
   return intel_admin_setup_intel_profile_check($form, $form_state);
 }
 
@@ -126,7 +126,7 @@ function intel_addthis_admin_setup_intel_profile_check($form, &$form_state) {
  * Validates base Intelligence profile configuration.
  */
 function intel_addthis_admin_setup_intel_profile_validate($form, &$form_state, $status) {
-  include_once INTEL_DIR . 'admin/intel.admin_setup.inc';
+  include_once INTEL_DIR . 'admin/intel.admin_setup.php';
   return intel_admin_setup_intel_profile_validate($form, $form_state, $status);
 }
 
@@ -134,7 +134,7 @@ function intel_addthis_admin_setup_intel_profile_validate($form, &$form_state, $
  * Locks in profile and prompts for GA Dashboard for WP if not installed.
  */
 function intel_addthis_admin_setup_intel_profile_submit($form, &$form_state) {
-  include_once INTEL_DIR . 'admin/intel.admin_setup.inc';
+  include_once INTEL_DIR . 'admin/intel.admin_setup.php';
   return intel_admin_setup_intel_profile_submit($form, $form_state);
 }
 

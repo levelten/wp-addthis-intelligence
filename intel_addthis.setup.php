@@ -9,7 +9,7 @@
  */
 
 if (!is_callable('intel_setup')) {
-	include_once intel_addthis()->dir . 'intel_com/intel.setup.inc';
+	include_once intel_addthis()->dir . 'intel_com/intel.setup.php';
 }
 
 class Intel_Addthis_Setup extends Intel_Setup {

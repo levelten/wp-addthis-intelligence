@@ -143,7 +143,7 @@ final class Intel_Addthis {
   public function wp_loaded() {
     // check if Intel is installed, add setup processing if not
     if (!$this->is_intel_installed()) {
-      require_once( $this->dir . $this->plugin_un . '.setup.inc' );
+      require_once( $this->dir . $this->plugin_un . '.setup.php' );
     }
   }
 
@@ -181,7 +181,7 @@ final class Intel_Addthis {
       'plugin_url' => $this->url,
       // The install file for the plugin if different than [plugin_un].install
       // Used to auto discover database updates
-      'update_file' => 'intel_addthis.install', // default [plugin_un].install
+      'update_file' => 'intel_addthis.install.php', // default [plugin_un].install
       // If this plugin extends a plugin other than Intelligience, include that
       // plugin's info in 'extends_' properties
       // The extended plugin's unique name
@@ -221,7 +221,7 @@ final class Intel_Addthis {
       'access callback' => 'user_access',
       'access arguments' => array('admin intel'),
       'type' => Intel_Df::MENU_LOCAL_TASK,
-      'file' => 'admin/' . $this->plugin_un . '.admin_setup.inc',
+      'file' => 'admin/' . $this->plugin_un . '.admin_setup.php',
       'file path' => $this->dir,
     );
     // route for Admin > Intelligence > Help > Demo > AddThis
@@ -446,10 +446,10 @@ $intel_addthis = intel_addthis();
  *
  * Initializes Intel's database schema update system
  */
-function _intel_addthis_activation() {
+function intel_addthis_activation_hook() {
   // plugin specific installation code.
   // initializes data for plugin when first installed
-  require_once plugin_dir_path( __FILE__ ) . 'intel_addthis.install';
+  require_once plugin_dir_path( __FILE__ ) . 'intel_addthis.install.php';
   intel_addthis_install();
 
   // check if Intel is active
@@ -458,27 +458,27 @@ function _intel_addthis_activation() {
     intel_activate_plugin('intel_addthis');
   }
 }
-register_activation_hook( __FILE__, '_intel_addthis_activation' );
+register_activation_hook( __FILE__, 'intel_addthis_activation_hook' );
 
 /**
  * Implements hook_register_deactivation_hook()
  *
  * The code that runs during plugin deactivation.
  */
-function _intel_addthis_deactivate() {
+function intel_addthis_deactivate_hook() {
 
 }
-register_deactivation_hook( __FILE__, '_intel_addthis_deactivate' );
+register_deactivation_hook( __FILE__, 'intel_addthis_deactivate_hook' );
 
 /*
  * Implements hook_register_uninstall_hook()
  *
  * Runs when plugin is Deleted (uninstalled)
  */
-function _intel_addthis_uninstall() {
+function intel_addthis_uninstall_hook() {
   // plugin specific installation code.
   // remove plugin data from database before plugin is uninstalled
-  require_once plugin_dir_path( __FILE__ ) . 'intel_addthis.install';
+  require_once plugin_dir_path( __FILE__ ) . 'intel_addthis.install.php';
   intel_addthis_uninstall();
 }
-register_uninstall_hook( __FILE__, '_intel_addthis_uninstall' );
+register_uninstall_hook( __FILE__, 'intel_addthis_uninstall_hook' );

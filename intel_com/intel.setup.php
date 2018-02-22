@@ -5,8 +5,6 @@
  * Supports plugin setup to install Intelligence plugin.
  *
  * This file should only be included before Intelligence is installed and active.
- * Any code that might be used before and after Intel is active should be
- * included in intel.wp.inc.
  *
  * All code in this file should have no dependencies on Intel framework.
  */
