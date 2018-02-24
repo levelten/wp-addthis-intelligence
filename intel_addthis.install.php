@@ -23,12 +23,3 @@ function intel_addthis_install() {
 function intel_addthis_uninstall() {
 
 }
-
-/**
- * Implements hook_update_n()
- *
- * Used to implement ordered database updates.
- */
-function intel_addthis_update_1001() {
-
-}

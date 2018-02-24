@@ -169,12 +169,16 @@ final class Intel_Addthis {
     $info = array(
       // The unique name for this plugin
       'plugin_un' => $this->plugin_un,
+      // The unique name for this plugin
+      'plugin_version' => $this->version,
       // Title of the plugin
       'plugin_title' => __('Google Analytics Intelligence for AddThis', $this->plugin_un),
       // Shorter version of title used when reduced characters are desired
       'plugin_title_short' => __('GA Intelligence for AddThis', $this->plugin_un),
+      // Plugin slug - name of directory containing plugin
+      'plugin_slug' => 'intelligence-addthis',
       // Main plugin file
-      'plugin_file' => 'intel_addthis.php', // Main plugin file
+      'plugin_file' => 'intel_addthis.php',
       // The server path to the plugin files directory
       'plugin_dir' => $this->dir,
       // The browser path to the plugin files directory
