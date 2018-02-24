@@ -1,4 +1,4 @@
-=== Intelligence for AddThis ===
+=== Google Analytics Intelligence for AddThis ===
 Contributors: tomdude, jerads
 Donate link: getlevelten.com/blog/tom
 Tags: AddThis, analytics, Google Analytics, social metrics, social tracking
@@ -12,6 +12,8 @@ Automates tracking of AddThis interactions as Google Analytics events and goals.
 
 == Description ==
 
+### AddThis Google Analytics tracking plugin
+
 Automates tracking of AddThis shares, clickbacks, and follows as Google Analytics events and goals.
 
 #### Core Features
@@ -19,7 +21,7 @@ Automates tracking of AddThis shares, clickbacks, and follows as Google Analytic
 * Tracks [AddThis share buttons](https://wordpress.org/plugins/addthis)
 * Tracks clickbacks
 * Tracks [AddThis follow buttons](https://wordpress.org/plugins/addthis-follow)
-* Custom tracking as Google Analytics events or goals
+* Track using Google Analytics events and goals
 * Custom goal values
 * Create GA goals directly from WordPress
 * No coding required
