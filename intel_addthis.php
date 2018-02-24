@@ -1,6 +1,6 @@
 <?php
 /**
-* Intelligence AddThis bootstrap file
+* Google Analytics Intelligence AddThis bootstrap file
 *
 * This file is read by WordPress to generate the plugin information in the plugin
 * admin area. This file also includes all of the dependencies used by the plugin,
@@ -12,8 +12,8 @@
 * @package           Intelligence
 *
 * @wordpress-plugin
-* Plugin Name:       Intelligence for AddThis
-* Plugin URI:        https://wordpress.org/plugins/intelligence-example
+* Plugin Name:       Google Analytics Intelligence for AddThis
+* Plugin URI:        https://wordpress.org/plugins/intelligence-addthis
 * Description:       Automates Google Analytics tracking for AddThis.
 * Version:           1.0.0
 * Author:            LevelTen
