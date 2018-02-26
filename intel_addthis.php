@@ -421,7 +421,11 @@ final class Intel_Addthis {
     $content = '';
     $content .= __('Google Analytics Intelligence for AddThis Demo', $this->plugin_un);
 
-    $content .= '<p>Enable an AddThis widget <a href="/wp-admin/admin.php?page=addthis_sharing_buttons#/tools">here</a>. Then any clicks to social icons will be tracked in Google Analytics!  </p>';
+    $content .= '<p>';
+    $content .= __('Enable an AddThis widget', $this->plugin_un);
+    $content .= ' ' . Intel_Df::l(__('here', $this->plugin_un), 'admin.php?page=addthis_sharing_buttons#/tools') . '.';
+    $content .= ' ' . __('Then any clicks to social icons will be tracked in Google Analytics!', $this->plugin_un);
+    $content .= '</p>';
 
     $posts["$id"] = array(
       'ID' => $id,
