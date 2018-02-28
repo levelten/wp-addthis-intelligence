@@ -106,6 +106,9 @@ final class Intel_Addthis {
 
     $this->url = plugin_dir_url(__FILE__);
 
+    // Register hook_admin_menu()
+    add_filter('admin_menu', array( $this, 'intel_admin_menu' ));
+
     /*
      * Intelligence hooks
      */
@@ -132,6 +135,105 @@ final class Intel_Addthis {
     add_filter('intel_demo_posts', array( $this, 'intel_demo_posts' ));
 
   }
+  
+  /**
+   * Implements hook_admin_menu
+   *
+   * Adds settings page on Admin > AddThis > Intelligence
+   */
+  public function intel_admin_menu(){
+    global $submenu;
+    // Add AddThis subpage with links to intel settings
+    $addthis_menu_slug = 'addthis_registration';
+    $page_title = 'Intelligence for AddThis Settings';
+    $menu_title = 'Intelligence Settings';
+    $menu_slug = 'addthis_intel_settings';
+    $callback = array($this, 'intel_addthis_settings_page');
+    if(!empty($submenu[$addthis_menu_slug])){
+      add_submenu_page(
+          $addthis_menu_slug,
+          $page_title,
+          $menu_title,
+          'manage_options',
+          $menu_slug,
+          $callback
+      );
+    }
+  }
+  
+  /*
+   * Settings page for Admin > AddThis > Intelligence
+   */
+  public function intel_addthis_settings_page() {
+    $items = array();
+
+    $items[] = '<div class="wrap">';
+    $items[] = '<h1>' . esc_html__( 'Intelligence Settings', $this->plugin_un ) . '</h1>';
+    $items[] = '</div>';
+
+
+    if($this->is_intel_installed()) {
+      $connect_desc = __('Connected');
+    }
+    else { //TODO check this
+      $connect_desc = __('Not connected.', $this->plugin_un);
+      $connect_desc .= ' ' . sprintf(
+          __( ' %sSetup Intelligence%s', $this->plugin_un ),
+          '<a href="' . Intel_Setup()->get_plugin_setup_url() . '" class="button">', '</a>'
+        );
+    }
+
+    $items[] = '<table class="form-table">';
+    $items[] = '<tbody>';
+    $items[] = '<tr>';
+    $items[] = '<th>' . esc_html__( 'Intelligence API', $this->plugin_un ) . '</th>';
+    $items[] = '<td>' . $connect_desc . '</td>';
+    $items[] = '</tr>';
+    
+    if ($this->is_intel_installed()) {
+      // events defined in intel_intel_event_info
+      $event_uns = ['intel_addthis_clickback_click', 'intel_addthis_share_click', 'intel_addthis_follow_click'];
+      foreach ($event_uns as $event_un) {
+        $event = intel_get_intel_event_info($event_un);
+        // check if editable?
+        //$eventgoal_options = intel_get_intel_events_overridable_fields($event);
+        // Translate from machine name.
+        $event_types = array(
+          '_' => Intel_Df::t('(Not Set)'),
+          '' => Intel_Df::t('Standard event'),
+          'valued' => Intel_Df::t('Valued event'),
+          'goal' => Intel_Df::t('Goal event'),
+        );
+        $value = $event_types[$event['mode']];
+        // Translate from machine name.
+        $goals = get_option('intel_goals', array());
+        $goal_types = array();
+        foreach ($goals AS $key => $goal) {
+          if (empty($goal['context']['general'])) {
+            continue;
+          }
+          $goal_types[$goal['ga_id']] = $goal['title'];
+        }
+        // "event type : goal [change button]"
+        $value .= ': '. $goal_types[$event['ga_id']];
+        $l_options = Intel_Df::l_options_add_destination('wp-admin/admin.php?page=addthis_intel');
+        $l_options['attributes'] = array(
+          'class' => array('button'),
+        );
+        $change = Intel_Df::l(esc_html__('Change', $this->plugin_un), 'admin/config/intel/settings/intel_event/'.$this->plugin_un, $l_options);
+        $items[] = '<tr>';
+        $items[] = '<th>' . esc_html__( $event['title'], $this->plugin_un ) . '</th>';
+        $items[] = '<td>' . $value . '</td>';
+        $items[] = '<td>' . $change . '</td>';
+        $items[] = '</tr>';
+      }
+    }
+    $items[] = '</tbody>';
+    $items[] = '</table>';
+
+    $output = implode("\n", $items);
+    echo $output;
+  }
 
   /**
    * Implements hook_wp_loaded()
@@ -142,6 +244,7 @@ final class Intel_Addthis {
    */
   public function wp_loaded() {
     // check if Intel is installed, add setup processing if not
+    //TODO move to intel_admin_menu
     if (!$this->is_intel_installed()) {
       require_once( $this->dir . $this->plugin_un . '.setup.php' );
     }
@@ -238,8 +341,21 @@ final class Intel_Addthis {
       'type' => Intel_Df::MENU_LOCAL_TASK,
       'weight' => 10,
     );
+      // route for Admin > Intelligence > Settings > Event > AddThis
+      $items['admin/config/intel/settings/intel_event/' . $this->plugin_un] = array(
+        'title' => 'AddThis Social Tracking',
+        'description' => Intel_Df::t('Event and goal configuration.'),
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('intel_addthis_admin_social_tracking_form'),
+        'access callback' => 'user_access',
+        'access arguments' => array('admin intel'),
+        'type' => Intel_Df::MENU_LOCAL_TASK,
+        'file' => 'intel_addthis.php',
+        'file path' => $this->dir,
+      );
     return $items;
   }
+  
   
   /**
    * Implements hook_intel_intel_script_info()
@@ -437,6 +553,124 @@ final class Intel_Addthis {
 
     return $posts;
   }
+}
+
+function intel_addthis_admin_social_tracking_form($form, &$form_state) {
+  wp_enqueue_script('intel-admin-config-intel-event-edit', INTEL_URL . 'admin/js/intel-admin-config-intel-event-edit.js');
+  
+  $form['default'] = array(
+    '#type' => 'fieldset',
+    '#title' => Intel_Df::t('Social Tracking events'),
+    '#collapsible' => FALSE,
+    '#collapsed' => FALSE,
+  );
+  
+  // events defined in intel_intel_event_info
+  $event_uns = ['intel_addthis_clickback_click', 'intel_addthis_share_click', 'intel_addthis_follow_click'];
+  foreach ($event_uns as $event_un) {
+    $event = intel_get_intel_event_info($event_un);
+    $overridable = intel_get_intel_events_overridable_fields($event);
+    $custom = (!$event || !empty($event['custom'])) ? 1 : 0;
+    
+    $form_state['event'] = $event;
+    $form_state['intel_overridable'] = $overridable;
+    $form[$event['title']] = array(
+      '#type' => 'fieldset',
+      '#title' => Intel_Df::t($event['title']),
+      '#collapsible' => FALSE,
+      '#collapsed' => FALSE,
+      //'#description' => Intel_Df::t('The parameters sent to Google Analtyics when the event is triggered.'),
+    );
+    
+    $key = 'mode';
+    $disabled = !($custom || !empty($overridable[$key]));
+    if (!$disabled || !empty($event['ga_event_auto'])) {
+      $options = array(
+        '_' => Intel_Df::t('-- None --'),
+        '' => Intel_Df::t('Standard event'),
+        'valued' => Intel_Df::t('Valued event'),
+        'goal' => Intel_Df::t('Goal event'),
+      );
+      $form['ga_event_values'][$key] = array(
+        '#type' => (1 || $custom || !empty($overridable[$key])) ? 'select' : 'item',
+        '#title' => Intel_Df::t('Mode'),
+        '#options' => $options,
+        '#default_value' => !empty($event[$key]) ? $event[$key] : '',
+        '#description' => Intel_Df::t('Select the style of event you would like to send to Google Analytics. Goal events are used to trigger a GA goal. Select "Valued event" for events adding business value to the site. Use "Standard event" for all others.'),
+        '#disabled' => $disabled,
+      );
+      $form['ga_event_values'][$key]['#markup'] = $form['ga_event_values'][$key]['#default_value'];
+    }
+
+
+    $form['ga_event_values']['inline_wrapper_0'] = array(
+      '#type' => 'markup',
+      '#markup' => '<div class="clearfix"><div class="pull-left ">',
+    );
+  }
+  return $form;
+  $form['default']['inline_wrapper_1'] = array(
+    '#type' => 'markup',
+    '#markup' => '<div class="pull-left">',
+  );
+
+  $eventgoal_options = intel_get_form_submission_eventgoal_options('default');
+  $l_options = Intel_Df::l_options_add_destination(Intel_Df::current_path());
+  $form['default']['intel_form_track_submission_default'] = array(
+    '#type' => 'select',
+    '#title' => Intel_Df::t('Submission event/value'),
+    '#options' => $eventgoal_options,
+    '#default_value' => get_option('intel_form_track_submission_default', 'form_submission'),
+    '#description' => Intel_Df::t('Select the goal or event you would like to trigger to be tracked in analytics when a form is submitted.'),
+    '#suffix' => '<div class="add-goal-link text-right" style="margin-top: -12px;">' . Intel_Df::l(Intel_Df::t('Add Goal'), 'admin/config/intel/settings/goal/add', $l_options) . '</div>',
+  );
+
+  $form['default']['inline_wrapper_2'] = array(
+    '#type' => 'markup',
+    '#markup' => '</div><div class="clearfix"></div>',
+  );
+
+  $l_options = Intel_Df::l_options_add_target('intel_admin_config_scoring');
+  $desc = Intel_Df::t('Each goal has a default site wide value in the !scoring_admin, but you can override that value per form.', array(
+    '!scoring_admin' => Intel_Df::l( Intel_Df::t('Intelligence scoring admin'), 'admin/config/intel/settings/scoring', $l_options ),
+  ));
+  $desc .= ' ' . Intel_Df::t('If you would like to use a custom goal/event value, enter it here otherwise leave the field blank to use the site defaults.');
+  $form['default']['intel_form_track_submission_value_default'] = array(
+    '#type' => 'textfield',
+    '#title' => Intel_Df::t('Submission value'),
+    '#default_value' => get_option('intel_form_track_submission_value_default', ''),
+    '#description' => $desc,
+    '#size' => 8,
+  );
+
+  $desc .= ' ' . Intel_Df::t('Triggers "Form impression" event whenever a form appears on a page.');
+  $form['default']['intel_form_track_view_default'] = array(
+    '#type' => 'checkbox',
+    '#title' => Intel_Df::t('Track form views'),
+    '#default_value' => get_option('intel_form_track_view_default', ''),
+    '#description' => $desc,
+    '#size' => 8,
+  );
+
+  /*
+  $form['save'] = array(
+    '#type' => 'submit',
+    '#value' => Intel_Df::t('Save'),
+  );
+  */
+
+  $form['actions'] = array('#type' => 'actions');
+  $form['actions']['save'] = array(
+    '#type' => 'submit',
+    '#value' => Intel_Df::t('Save'),
+  );
+  $form['actions']['cancel'] = array(
+    '#type' => 'link',
+    '#title' => Intel_Df::t('Cancel'),
+    '#href' => !empty($_GET['destination']) ? $_GET['destination'] : 'admin/config/intel/settings/form',
+  );
+
+  return $form;
 }
 
 function intel_addthis() {
