@@ -160,6 +160,137 @@ final class Intel_Addthis {
       );
     }
   }
+
+  static function intel_addthis_admin_social_tracking_form($form, &$form_state) {
+    $form['share'] = array(
+      '#type' => 'fieldset',
+      '#title' => Intel_Df::t('Share button tracking'),
+      '#collapsible' => FALSE,
+      //'#collapsed' => TRUE,
+    );
+
+    $form['share']['inline_wrapper_1'] = array(
+      '#type' => 'markup',
+      '#markup' => '<div class="pull-left">',
+    );
+
+    $eventgoal_options = intel_get_form_submission_eventgoal_options('default');
+    //intel_get_intel_event_eventgoal_options($event_un);
+    $l_options = Intel_Df::l_options_add_destination(Intel_Df::current_path());
+    $form['share']['intel_addthis_track_share_click'] = array(
+      '#type' => 'select',
+      '#title' => Intel_Df::t('Share click event/goal'),
+      '#options' => $eventgoal_options,
+      '#default_value' => get_option('intel_form_track_submission_default', 'form_submission'),
+      '#description' => Intel_Df::t('Select the goal or event you would like to trigger to be tracked in analytics when a form is submitted.'),
+      '#suffix' => '<div class="add-goal-link text-right" style="margin-top: -12px;">' . Intel_Df::l(Intel_Df::t('Add Goal'), 'admin/config/intel/settings/goal/add', $l_options) . '</div>',
+    );
+
+    $form['share']['inline_wrapper_2'] = array(
+      '#type' => 'markup',
+      '#markup' => '</div><div class="clearfix"></div>',
+    );
+
+    $l_options = Intel_Df::l_options_add_target('intel_admin_config_scoring');
+    $desc = Intel_Df::t('Each goal has a default site wide value in the !scoring_admin, but you can override that value per form.', array(
+      '!scoring_admin' => Intel_Df::l( Intel_Df::t('Intelligence scoring admin'), 'admin/config/intel/settings/scoring', $l_options ),
+    ));
+    $desc .= ' ' . Intel_Df::t('If you would like to use a custom goal/event value, enter it here otherwise leave the field blank to use the site defaults.');
+    $form['share']['intel_addthis_track_share_click_value'] = array(
+      '#type' => 'textfield',
+      '#title' => Intel_Df::t('Share click value'),
+      '#default_value' => get_option('intel_form_track_submission_value_default', ''),
+      '#description' => $desc,
+      '#size' => 8,
+    );
+
+    $eventgoal_options = intel_get_form_submission_eventgoal_options('default');
+    $l_options = Intel_Df::l_options_add_destination(Intel_Df::current_path());
+    $form['share']['intel_addthis_track_share_clickback'] = array(
+      '#type' => 'select',
+      '#title' => Intel_Df::t('Share clickback event/goal'),
+      '#options' => $eventgoal_options,
+      '#default_value' => get_option('intel_form_track_submission_default', 'form_submission'),
+      '#description' => Intel_Df::t('Select the goal or event you would like to trigger to be tracked in analytics when a form is submitted.'),
+      '#suffix' => '<div class="add-goal-link text-right" style="margin-top: -12px;">' . Intel_Df::l(Intel_Df::t('Add Goal'), 'admin/config/intel/settings/goal/add', $l_options) . '</div>',
+    );
+
+    $form['share']['inline_wrapper_2'] = array(
+      '#type' => 'markup',
+      '#markup' => '</div><div class="clearfix"></div>',
+    );
+
+    $l_options = Intel_Df::l_options_add_target('intel_admin_config_scoring');
+    $desc = Intel_Df::t('Each goal has a default site wide value in the !scoring_admin, but you can override that value per form.', array(
+      '!scoring_admin' => Intel_Df::l( Intel_Df::t('Intelligence scoring admin'), 'admin/config/intel/settings/scoring', $l_options ),
+    ));
+    $desc .= ' ' . Intel_Df::t('If you would like to use a custom goal/event value, enter it here otherwise leave the field blank to use the site defaults.');
+    $form['share']['intel_addthis_track_share_clickback_value'] = array(
+      '#type' => 'textfield',
+      '#title' => Intel_Df::t('Share clickback value'),
+      '#default_value' => get_option('intel_form_track_submission_value_default', ''),
+      '#description' => $desc,
+      '#size' => 8,
+    );
+
+    $form['follow'] = array(
+      '#type' => 'fieldset',
+      '#title' => Intel_Df::t('Follow button tracking'),
+      '#collapsible' => FALSE,
+      //'#collapsed' => TRUE,
+    );
+
+    $form['follow']['inline_wrapper_1'] = array(
+      '#type' => 'markup',
+      '#markup' => '<div class="pull-left">',
+    );
+
+    $eventgoal_options = intel_get_form_submission_eventgoal_options('default');
+    $l_options = Intel_Df::l_options_add_destination(Intel_Df::current_path());
+    $form['follow']['intel_addthis_track_follow_click'] = array(
+      '#type' => 'select',
+      '#title' => Intel_Df::t('Follow click event/goal'),
+      '#options' => $eventgoal_options,
+      '#default_value' => get_option('intel_form_track_submission_default', 'form_submission'),
+      '#description' => Intel_Df::t('Select the goal or event you would like to trigger to be tracked in analytics when a form is submitted.'),
+      '#suffix' => '<div class="add-goal-link text-right" style="margin-top: -12px;">' . Intel_Df::l(Intel_Df::t('Add Goal'), 'admin/config/intel/settings/goal/add', $l_options) . '</div>',
+    );
+
+    $form['follow']['inline_wrapper_2'] = array(
+      '#type' => 'markup',
+      '#markup' => '</div><div class="clearfix"></div>',
+    );
+
+    $l_options = Intel_Df::l_options_add_target('intel_admin_config_scoring');
+    $desc = Intel_Df::t('Each goal has a default site wide value in the !scoring_admin, but you can override that value per form.', array(
+      '!scoring_admin' => Intel_Df::l( Intel_Df::t('Intelligence scoring admin'), 'admin/config/intel/settings/scoring', $l_options ),
+    ));
+    $desc .= ' ' . Intel_Df::t('If you would like to use a custom goal/event value, enter it here otherwise leave the field blank to use the site defaults.');
+    $form['follow']['intel_addthis_track_follow_click_value'] = array(
+      '#type' => 'textfield',
+      '#title' => Intel_Df::t('Follow click value'),
+      '#default_value' => get_option('intel_form_track_submission_value_default', ''),
+      '#description' => $desc,
+      '#size' => 8,
+    );
+
+    $form['actions'] = array('#type' => 'actions');
+    $form['actions']['save'] = array(
+      '#type' => 'submit',
+      '#value' => Intel_Df::t('Save'),
+    );
+    $form['actions']['cancel'] = array(
+      '#type' => 'link',
+      '#title' => Intel_Df::t('Cancel'),
+      '#href' => !empty($_GET['destination']) ? $_GET['destination'] : 'admin/config/intel/settings/form',
+    );
+
+    return $form;
+  }
+
+  static function intel_addthis_admin_social_tracking_form_submit($form, &$form_state) {
+    intel_d($form_state['values']);
+  }
   
   /*
    * Settings page for Admin > AddThis > Intelligence
@@ -346,12 +477,13 @@ final class Intel_Addthis {
         'title' => 'AddThis Social Tracking',
         'description' => Intel_Df::t('Event and goal configuration.'),
         'page callback' => 'drupal_get_form',
-        'page arguments' => array('intel_addthis_admin_social_tracking_form'),
+        'page arguments' => array('Intel_Addthis::intel_addthis_admin_social_tracking_form'),
         'access callback' => 'user_access',
         'access arguments' => array('admin intel'),
         'type' => Intel_Df::MENU_LOCAL_TASK,
         'file' => 'intel_addthis.php',
         'file path' => $this->dir,
+        'weight' => 5,
       );
     return $items;
   }
