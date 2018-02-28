@@ -1,6 +1,6 @@
 <?php
 /**
-* Google Analytics Intelligence AddThis bootstrap file
+* Google Analytics Intelligence for AddThis bootstrap file
 *
 * This file is read by WordPress to generate the plugin information in the plugin
 * admin area. This file also includes all of the dependencies used by the plugin,
@@ -279,7 +279,7 @@ final class Intel_Addthis {
       // Shorter version of title used when reduced characters are desired
       'plugin_title_short' => __('GA Intelligence for AddThis', $this->plugin_un),
       // Plugin slug - name of directory containing plugin
-      'plugin_slug' => 'intelligence-addthis',
+      'plugin_slug' => 'intel-addthis',
       // Main plugin file
       'plugin_file' => 'intel_addthis.php',
       // The server path to the plugin files directory
@@ -537,7 +537,11 @@ final class Intel_Addthis {
     $content = '';
     $content .= __('Google Analytics Intelligence for AddThis Demo', $this->plugin_un);
 
-    $content .= '<p>Enable an AddThis widget <a href="/wp-admin/admin.php?page=addthis_sharing_buttons#/tools">here</a>. Then any clicks to social icons will be tracked in Google Analytics!  </p>';
+    $content .= '<p>';
+    $content .= __('Enable an AddThis widget', $this->plugin_un);
+    $content .= ' ' . Intel_Df::l(__('here', $this->plugin_un), 'admin.php?page=addthis_sharing_buttons#/tools') . '.';
+    $content .= ' ' . __('Then any clicks to social icons will be tracked in Google Analytics!', $this->plugin_un);
+    $content .= '</p>';
 
     $posts["$id"] = array(
       'ID' => $id,
