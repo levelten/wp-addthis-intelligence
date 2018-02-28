@@ -162,7 +162,8 @@ final class Intel_Addthis {
   }
 
   static function intel_addthis_admin_social_tracking_form($form, &$form_state) {
-    $events_un = array_keys(self::intel_intel_event_info());
+    $events_un = array_keys(self::$instance->intel_intel_event_info());
+    $goals = intel_goal_load(NULL, array('index_by' => 'ga_id'));
     foreach($events_un as $event_un){
       $event = intel_get_intel_event_info($event_un);
       $eventgoal_options = intel_addthis_get_intel_event_eventgoal_options($event_un);
@@ -172,16 +173,24 @@ final class Intel_Addthis {
         '#title' => Intel_Df::t($event['title']),
         '#collapsible' => FALSE,
         //'#collapsed' => TRUE,
+        //'#description' => $event['description'],
       );
       $form[$event_un]['inline_wrapper_1'] = array(
         '#type' => 'markup',
         '#markup' => '<div class="pull-left">',
       );
+      $default = $event_un;
+      if ($event['mode'] == '') {
+        $default .= '-';
+      }
+      elseif ($event['mode'] == 'goal' && !empty($goals[$event['ga_id']])) {
+        $default .= '__' . $goals[$event['ga_id']]['un'];
+      }
       $form[$event_un]['intel_addthis_event'] = array(
         '#type' => 'select',
         '#title' => Intel_Df::t($event['category']. ' event/goal'),
         '#options' => $eventgoal_options,
-        '#default_value' => get_option('intel_form_track_submission_default', 'social_click'),
+        '#default_value' => $default,
         '#description' => Intel_Df::t('Select the goal or event you would like to trigger to be tracked in analytics for this action.'),
         '#suffix' => '<div class="add-goal-link text-right" style="margin-top: -12px;">' . Intel_Df::l(Intel_Df::t('Add Goal'), 'admin/config/intel/settings/goal/add', $l_options) . '</div>',
       );
@@ -623,27 +632,30 @@ final class Intel_Addthis {
 /**
  * Takes in an event or even un and returns 
  */
-function intel_addthis_get_intel_event_eventgoal_options($event_un){
+function intel_addthis_get_intel_event_eventgoal_options($event_un, $options = array()){
   
   if(!is_array($event_un)){
     $event = intel_get_intel_event_info($event_un);
-  }else{
+  }
+  else {
     $event = $event_un;
   }
-  
-  $options = array();
-  $options[''] = '(' . Intel_Df::t( 'default') . ')';
+
+  $field_options = array();
+
   // only thing different per addon
-  $options['social_click'] =  Intel_Df::t( 'Valued event: Social Click!' );
+  $field_options[$event_un . '-'] =  Intel_Df::t( 'Event:') . ' ' . $event['category'];
+  $field_options[$event_un] =  Intel_Df::t( 'Valued event:') . ' ' . $event['category'];
   
-  $goals = get_option('intel_goals', array());
+  $goals = intel_goal_load();
   foreach ($goals AS $key => $goal) {
     if (empty($goal['context']['general'])) {
       continue;
     }
-    $options[$key] = Intel_Df::t( 'Goal: ') . $goal['title'];
+    $field_options[$event_un . '__' . $key] = Intel_Df::t( 'Goal: ') . $goal['title'];
   }
-  return $options;
+
+  return $field_options;
 }
 
 function intel_addthis() {
