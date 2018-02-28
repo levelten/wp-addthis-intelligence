@@ -174,6 +174,7 @@ final class Intel_Addthis {
         '#collapsible' => FALSE,
         //'#collapsed' => TRUE,
         //'#description' => $event['description'],
+        '#tree' => TRUE,
       );
       $form[$event_un]['inline_wrapper_1'] = array(
         '#type' => 'markup',
@@ -205,7 +206,7 @@ final class Intel_Addthis {
       $desc .= ' ' . Intel_Df::t('If you would like to use a custom goal/event value, enter it here otherwise leave the field blank to use the defaults.');
       $form[$event_un]['intel_addthis_value'] = array(
         '#type' => 'textfield',
-        '#title' => Intel_Df::t('Share click value'),
+        '#title' => Intel_Df::t($event['category'] . ' value'),
         '#default_value' => $event['value'],
         '#description' => $desc,
         '#size' => 8,
@@ -220,15 +221,37 @@ final class Intel_Addthis {
     $form['actions']['cancel'] = array(
       '#type' => 'link',
       '#title' => Intel_Df::t('Cancel'),
-      '#href' => !empty($_GET['destination']) ? $_GET['destination'] : 'admin/config/intel/settings/intel_event',
+      '#href' => !empty($_GET['destination']) ? $_GET['destination'] : 'wp-admin/admin.php?page=addthis_intel_settings',
     );
 
     return $form;
   }
 
-  static function intel_addthis_admin_social_tracking_form_submit($form, &$form_state) {
-    intel_d($form_state['values']);
+  static function intel_addthis_admin_social_tracking_form_submit(&$form, &$form_state) {
+    $events = $form_state['values'];
+    $intel_events = get_option('intel_intel_events_custom', array());
+    foreach($events as $event_un => $values){
+      if(empty($values['intel_addthis_event'])){
+        continue;
+      }
+      $goal = explode('__',$values['intel_addthis_event']);
+      if(count($goal) > 1){//goal valued blank for std
+        $intel_events[$event_un]['mode'] = 'goal';
+        $intel_goals = intel_goal_load(null, array('index_by' => 'name'));
+        $intel_events[$event_un]['ga_id'] = $intel_goals[$goal[1]]['ga_id'];
+      }
+      else {
+        $intel_events[$event_un]['mode'] = (substr($goal[0],-1)=='-')? '' : 'valued';
+      }
+      $intel_events[$event_un]['value'] = $values['intel_addthis_value'];
+      $intel_events[$event_un]['enable'] = 1;
+    }
+    update_option('intel_intel_events_custom', $intel_events);
+    $msg = Intel_Df::t('AddThis events have been updated.', array());
+    // Doesn't show up on redirect
+    Intel_Df::drupal_set_message($msg);;
   }
+
   
   /*
    * Settings page for Admin > AddThis > Intelligence
@@ -285,7 +308,7 @@ final class Intel_Addthis {
         }
         // "event type : goal [change button]"
         $value .= ': '. $goal_types[$event['ga_id']];
-        $l_options = Intel_Df::l_options_add_destination('wp-admin/admin.php?page=addthis_intel');
+        $l_options = Intel_Df::l_options_add_destination('wp-admin/admin.php?page=addthis_intel_settings');
         $l_options['attributes'] = array(
           'class' => array('button'),
         );
