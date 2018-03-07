@@ -254,6 +254,7 @@ final class Intel_Addthis {
       }
       $event['value'] = floatval($values[$key]['intel_addthis_value']);
       $event['key'] = $key;
+
       intel_intel_event_save($event);
     }
 
@@ -532,11 +533,10 @@ final class Intel_Addthis {
       'mode' => 'valued',
       //'valued_event' => 1,
       'value' => 10,
-      'selector' => '.addthis-smartlayers',
-      'on_event' => 'click',
+      //'selector' => '.addthis-smartlayers',
+      'on_event' => 'none',
       'enable' => 1,
       'overridable' => array(
-        'selector' => 1,
       ),
       'social_action' => 'share',
       'plugin_un' => $this->plugin_un,
@@ -551,10 +551,9 @@ final class Intel_Addthis {
       //'valued_event' => 1,
       'value' => 10,
       //'selector' => '.io-social-share-track',
-      'on_event' => 'click',
+      'on_event' => 'none',
       'enable' => 1,
       'overridable' => array(
-        'selector' => 1,
       ),
       'social_action' => 'follow',
       'plugin_un' => $this->plugin_un,
@@ -568,10 +567,9 @@ final class Intel_Addthis {
       //'valued_event' => 1,
       'value' => 10,
       //'selector' => '.io-social-share-track',
-      'on_event' => 'click',
+      'on_event' => 'none',
       'enable' => 1,
       'overridable' => array(
-        'selector' => 1,
       ),
       'social_action' => 'clickback',
       'plugin_un' => $this->plugin_un,
