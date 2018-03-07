@@ -90,7 +90,14 @@ function L10iAddthis(_ioq, config) {
             if ((count > 0) && ((last_set == undefined) || ((timestamp - last_set) > (60 * 60 * 24)))) {
                 io('setFlag', 'session', 'addthis', timestamp, true);
             }
+
+
         });
+
+        // add AddThis dom objects to admin if enabled
+        var $obj = jQuery('.addthis-smartlayers');
+        //var $obj = jQuery('.addthis_tool');
+        io('admin:setBindTarget', $obj);
     };
 
     this.onSocialShare = function (evt) {
