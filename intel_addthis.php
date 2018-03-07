@@ -214,10 +214,9 @@ final class Intel_Addthis {
       $desc = Intel_Df::t('Enable tracking as a social interaction as well as an event.');
       $form[$event_un]['intel_addthis_social_interaction'] = array(
         '#type' => 'checkbox',
-        '#title' => Intel_Df::t('Track as Social interaction'),
-        '#default_value' => ($event['social_action']== '') ? False : True,
+        '#title' => Intel_Df::t('Track as social interaction'),
+        '#default_value' => ($event['social_action']== '') ? FALSE : TRUE,
         '#description' => $desc,
-        '#size' => 8,
       );
     }
 
@@ -241,6 +240,12 @@ final class Intel_Addthis {
     $events_info = self::$instance->intel_intel_event_info();
     $events_custom = get_option('intel_intel_events_custom', array());
 
+    $events_infoc = intel_get_intel_event_info();
+
+    intel_d($events_info);
+    intel_d($events_custom);
+    intel_d($events_infoc);
+
     $intel_goals = intel_goal_load(null, array('index_by' => 'name'));
 
     foreach ($events_info as $key => $event_info) {
@@ -262,6 +267,16 @@ final class Intel_Addthis {
       }
       $event['value'] = floatval($values[$key]['intel_addthis_value']);
       $event['key'] = $key;
+      // if social interaction is set to false, add property with empty string
+      // to custom settings to disable tracking
+      // If social interactions enabled, remove custom override so coded property
+      // value is used.
+      if (empty($values[$key]['intel_addthis_social_interaction'])) {
+        $event['social_action'] = '';
+      }
+      elseif (isset($event['social_action'])) {
+        unset($event['social_action']);
+      }
 
       intel_intel_event_save($event);
     }
@@ -352,7 +367,9 @@ final class Intel_Addthis {
           $goal_types[$goal['ga_id']] = $goal['title'];
         }
         // "event type : goal [change button]"
-        $value .= ': '. $goal_types[$event['ga_id']];
+        if (isset($event['ga_id']) && !empty($goal_types[$event['ga_id']])) {
+          $value .= ': '. $goal_types[$event['ga_id']];
+        }
         $l_options = Intel_Df::l_options_add_destination('wp-admin/admin.php?page=addthis_intel_settings');
         $l_options['attributes'] = array(
           'class' => array('button'),

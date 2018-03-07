@@ -102,20 +102,32 @@ function L10iAddthis(_ioq, config) {
             return;
         }
 
+        var socialNetwork = (typeof addthis.util.getServiceName(evt.data.service) != 'undefined') ? addthis.util.getServiceName(evt.data.service) : evt.data.service;
+
         var evtDef = {};
         if (_ioq.eventDefsIndex['intel_addthis_share_click'] && _ioq.eventDefs[_ioq.eventDefsIndex['intel_addthis_share_click']]) {
             evtDef = _ioq.eventDefs[_ioq.eventDefsIndex['intel_addthis_share_click']];
         }
         var ga_event = {
             'eventCategory': (evtDef.eventCategory) ? evtDef.eventCategory : "Social share click!",
-            'eventAction': (typeof addthis.util.getServiceName(evt.data.service) != 'undefined') ? addthis.util.getServiceName(evt.data.service) : evt.data.service,
-            'eventLabel': "[[systemAlias]]",
+            'eventAction': socialNetwork,
+            'eventLabel': _ioq.location.href,
             'eventValue': (evtDef.eventValue) ? evtDef.eventValue : io('get', 'config.scorings.events.addthis_social_share', 0),
             'nonInteraction': !_ioq.isNull(evtDef.nonInteraction) ? evtDef.nonInteraction : false,
             'eid': 'socialShareClick'
         };
 
         io('event', ga_event);
+
+        if (evtDef.socialAction) {
+            var socialDef = {
+                socialNetwork: socialNetwork,
+                socialAction: evtDef.socialAction,
+                socialTarget: _ioq.location.href,
+                hitType: 'social'
+            };
+            io('ga.send', socialDef);
+        }
     };
 
     this.onSocialShareClickback = function (evt) {
