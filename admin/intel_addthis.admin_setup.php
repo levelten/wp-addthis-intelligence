@@ -32,7 +32,7 @@ function intel_addthis_admin_setup_wizard_info($items = array()) {
   );
 
   $info['steps']['event_tracking'] = array(
-    'title' => __('AddThis Social Tracking Event Configuration', 'intel_addthis'),
+    'title' => __('Tracking configuration', 'intel_addthis'),
     'action_img_src' => INTEL_URL . '/images/setup_intel_action.png',
   );
 
@@ -146,21 +146,13 @@ function intel_addthis_admin_setup_event_tracking($form, &$form_state) {
   return $intel_addthis->intel_addthis_admin_social_tracking_form($form, $form_state);
 }
 
-function intel_addthis_admin_setup_event_tracking_submit($form, &$form_state) {
-  global $intel_addthis;
-  return $intel_addthis->intel_addthis_admin_social_tracking_form_submit($form, $form_state);
-}
-
 function intel_addthis_admin_setup_event_tracking_check($form, &$form_state) {
+
   $status = array();
-  $status['success'] = TRUE;
-  $event_settings = array_keys(get_option('intel_intel_events_custom',array()));
-  $addthis_events = ['intel_addthis_share_click','intel_addthis_follow_click','intel_addthis_clickback_click'];
-  foreach($addthis_events as $event_un){
-    if(!in_array($event_un,$event_settings)){
-      $status['success'] = FALSE;
-      break;
-    }
+
+  $wizard_state = $form_state['wizard_state'];
+  if (isset($wizard_state['successes']) && in_array('event_tracking', $wizard_state['successes'])) {
+    $status['success'] = 1;
   }
   return $status;
 }
@@ -169,9 +161,15 @@ function intel_addthis_admin_setup_event_tracking_validate($form, &$form_state, 
 
 }
 
-function intel_addthis_admin_setup_default_tracking_submit($form, &$form_state) {
-  update_option('intel_form_track_submission_default', $form_state['values']['intel_form_track_submission_default']);
-  update_option('intel_form_track_submission_value_default', $form_state['values']['intel_form_track_submission_value_default']);
+function intel_addthis_admin_setup_event_tracking_submit($form, &$form_state) {
+  global $intel_addthis;
+
+  $wizard_state = &$form_state['wizard_state'];
+  if (!in_array('event_tracking', $wizard_state['successes'])) {
+    $wizard_state['successes'][] = 'event_tracking';
+  }
+
+  return $intel_addthis->intel_addthis_admin_social_tracking_form_submit($form, $form_state);
 }
 
 /**

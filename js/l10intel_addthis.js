@@ -94,8 +94,10 @@ function L10iAddthis(_ioq, config) {
     
     this.onAddThisReady = function (evt) {
       // Add AddThis dom objects to admin event explorer if enabled
-      var $obj = jQuery('.at-share-btn');
-      io('admin:setBindTarget', $obj);
+        if (_ioq.settings.admin) {
+            var $obj = jQuery('.at-share-btn');
+            io('admin:setBindTarget', $obj);
+        }
     };
 
     this.onSocialShare = function (evt) {
