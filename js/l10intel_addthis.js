@@ -22,12 +22,11 @@ function L10iAddthis(_ioq, config) {
             return;
         }
         else {
-            //addthis.addEventListener('addthis.ready', this.onReady);
             addthis.addEventListener('addthis.menu.share', this.onSocialShare);
             addthis.addEventListener('addthis.menu.follow', this.onSocialFollow);
             addthis.addEventListener('addthis.user.clickback', this.onSocialShareClickback);
+            addthis.addEventListener('addthis.layers.ready', this.onAddThisReady);
             io('addCallback', 'domReady', this.onReady, this);
-            //this.onReady({});
         }
     };
 
@@ -90,14 +89,13 @@ function L10iAddthis(_ioq, config) {
             if ((count > 0) && ((last_set == undefined) || ((timestamp - last_set) > (60 * 60 * 24)))) {
                 io('setFlag', 'session', 'addthis', timestamp, true);
             }
-
-
         });
-
-        // add AddThis dom objects to admin if enabled
-        var $obj = jQuery('.addthis-smartlayers');
-        //var $obj = jQuery('.addthis_tool');
-        io('admin:setBindTarget', $obj);
+    };
+    
+    this.onAddThisReady = function (evt) {
+      // Add AddThis dom objects to admin event explorer if enabled
+      var $obj = jQuery('.at-share-btn');
+      io('admin:setBindTarget', $obj);
     };
 
     this.onSocialShare = function (evt) {
