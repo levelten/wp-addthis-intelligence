@@ -31,10 +31,10 @@ function intel_addthis_admin_setup_wizard_info($items = array()) {
     'action_img_src' => INTEL_URL . '/images/setup_intel_action.png',
   );
 
-  // $info['steps']['default_tracking'] = array(
-  //   'title' => __('Default tracking', 'intel_addthis'),
-  //   'action_img_src' => INTEL_URL . '/images/setup_intel_action.png',
-  // );
+  $info['steps']['event_tracking'] = array(
+    'title' => __('AddThis Social Tracking Event Configuration', 'intel_addthis'),
+    'action_img_src' => INTEL_URL . '/images/setup_intel_action.png',
+  );
 
 
   $info['steps']['finish'] = array(
@@ -141,88 +141,31 @@ function intel_addthis_admin_setup_intel_profile_submit($form, &$form_state) {
 /**
  * Configures AddThis tracking settings.
  */
-function intel_addthis_admin_setup_default_tracking($form, &$form_state) {
-  $f = array();
-
-  $items = array();
-
-  $text_domain = 'intel_addthis';
-
-  $items[] = '<p>';
-  $items[] = __('You can custom configure tracking per form.', $text_domain);
-  $items[] = __('Default tracking is used as a fallback for any form that does not have custom configuration to assure all forms are tracked.', $text_domain);
-  $items[] = '</p>';
-  $items[] = '<br>';
-
-  $f['instructions'] = array(
-    '#type' => 'markup',
-    '#markup' => implode(' ', $items),
-  );
-
-  $f['default'] = array(
-    '#type' => 'fieldset',
-    '#title' => __('Default form tracking', $text_domain),
-    '#collapsible' => FALSE,
-  );
-
-  $f['default']['inline_wrapper_1'] = array(
-    '#type' => 'markup',
-    '#markup' => '<div class="pull-left">',
-  );
-
-  // load goals in case ga profile already has goals
-  $options = array(
-    'index_by' => 'ga_id',
-    'refresh' => !empty($_GET['refresh']) && is_numeric($_GET['refresh']) ? intval($_GET['refresh']) : 3600,
-  );
-
-  $form_state['intel_goals'] = $goals = intel_goal_load(null, $options);
-  $form_state['intel_ga_goals'] = $ga_goals = intel_ga_goal_load();
-
-  $eventgoal_options = intel_get_form_submission_eventgoal_options('default');
-  $l_options = Intel_Df::l_options_add_destination(Intel_Df::current_path());
-  $f['default']['intel_form_track_submission_default'] = array(
-    '#type' => 'select',
-    '#title' => Intel_Df::t('Submission event/goal'),
-    '#options' => $eventgoal_options,
-    '#default_value' => get_option('intel_form_track_submission_default', 'form_submission'),
-    '#description' => __('Select the goal or event you would like to trigger to be tracked in analytics when a form is submitted.', $text_domain),
-    '#suffix' => '<div class="add-goal-link text-right" style="margin-top: -12px;">' . Intel_Df::l(Intel_Df::t('Add Goal'), 'admin/config/intel/settings/goal/add', $l_options) . '</div>',
-  );
-
-  $f['default']['inline_wrapper_2'] = array(
-    '#type' => 'markup',
-    '#markup' => '</div><div class="clearfix"></div>',
-  );
-
-  $desc = __('Set a value to be passed with the default goal. Leave blank to use the goal default value.', $text_domain);
-  $f['default']['intel_form_track_submission_value_default'] = array(
-    '#type' => 'textfield',
-    '#title' => Intel_Df::t('Submission value'),
-    '#default_value' => get_option('intel_form_track_submission_value_default', ''),
-    '#description' => $desc,
-    '#size' => 8,
-  );
-
-  return $f;
+function intel_addthis_admin_setup_event_tracking($form, &$form_state) {
+  global $intel_addthis;
+  return $intel_addthis->intel_addthis_admin_social_tracking_form($form, $form_state);
 }
 
-function intel_addthis_admin_setup_default_tracking_check($form, &$form_state) {
+function intel_addthis_admin_setup_event_tracking_submit($form, &$form_state) {
+  global $intel_addthis;
+  return $intel_addthis->intel_addthis_admin_social_tracking_form_submit($form, $form_state);
+}
+
+function intel_addthis_admin_setup_event_tracking_check($form, &$form_state) {
   $status = array();
-
-  $event_name = get_option('intel_form_track_submission_default', -1);
-  if (isset($form_state['values']['intel_form_track_submission_default'])) {
-    $event_name = $form_state['values']['intel_form_track_submission_default'];
+  $status['success'] = TRUE;
+  $event_settings = array_keys(get_option('intel_intel_events_custom',array()));
+  $addthis_events = ['intel_addthis_share_click','intel_addthis_follow_click','intel_addthis_clickback_click'];
+  foreach($addthis_events as $event_un){
+    if(!in_array($event_un,$event_settings)){
+      $status['success'] = FALSE;
+      break;
+    }
   }
-
-  if ($event_name != -1) {
-    $status['success'] = 1;
-  }
-
   return $status;
 }
 
-function intel_addthis_admin_setup_default_tracking_validate($form, &$form_state, $status) {
+function intel_addthis_admin_setup_event_tracking_validate($form, &$form_state, $status) {
 
 }
 

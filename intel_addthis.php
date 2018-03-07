@@ -240,12 +240,6 @@ final class Intel_Addthis {
     $events_info = self::$instance->intel_intel_event_info();
     $events_custom = get_option('intel_intel_events_custom', array());
 
-    $events_infoc = intel_get_intel_event_info();
-
-    intel_d($events_info);
-    intel_d($events_custom);
-    intel_d($events_infoc);
-
     $intel_goals = intel_goal_load(null, array('index_by' => 'name'));
 
     foreach ($events_info as $key => $event_info) {
