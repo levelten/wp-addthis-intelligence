@@ -211,6 +211,14 @@ final class Intel_Addthis {
         '#description' => $desc,
         '#size' => 8,
       );
+      $desc = Intel_Df::t('Enable tracking as a social interaction as well as an event.');
+      $form[$event_un]['intel_addthis_social_interaction'] = array(
+        '#type' => 'checkbox',
+        '#title' => Intel_Df::t('Track as Social interaction'),
+        '#default_value' => ($event['social_action']== '') ? False : True,
+        '#description' => $desc,
+        '#size' => 8,
+      );
     }
 
     $form['actions'] = array('#type' => 'actions');
