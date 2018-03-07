@@ -228,6 +228,41 @@ final class Intel_Addthis {
   }
 
   static function intel_addthis_admin_social_tracking_form_submit(&$form, &$form_state) {
+    $values = $form_state['values'];
+
+    $events_info = self::$instance->intel_intel_event_info();
+    $events_custom = get_option('intel_intel_events_custom', array());
+
+    $intel_goals = intel_goal_load(null, array('index_by' => 'name'));
+
+    foreach ($events_info as $key => $event_info) {
+      if(empty($values[$key]['intel_addthis_event'])){
+        continue;
+      }
+
+      $event = !empty($events_custom[$key]) ? $events_custom[$key] : array();
+
+
+      $goal = explode('__',$values[$key]['intel_addthis_event']);
+      //goal valued blank for std
+      if(count($goal) > 1){
+        $event['mode'] = 'goal';
+        $event['ga_id'] = $intel_goals[$goal[1]]['ga_id'];
+      }
+      else {
+        $event['mode'] = (substr($goal[0], -1) == '-') ? '' : 'valued';
+      }
+      $event['value'] = floatval($values[$key]['intel_addthis_value']);
+      $event['key'] = $key;
+      intel_intel_event_save($event);
+    }
+
+    $msg = Intel_Df::t('AddThis events have been updated.', array());
+    // Doesn't show up on redirect
+    Intel_Df::drupal_set_message($msg);
+    return;
+
+    /*
     $events = $form_state['values'];
     $intel_events = get_option('intel_intel_events_custom', array());
     foreach($events as $event_un => $values){
@@ -249,7 +284,8 @@ final class Intel_Addthis {
     update_option('intel_intel_events_custom', $intel_events);
     $msg = Intel_Df::t('AddThis events have been updated.', array());
     // Doesn't show up on redirect
-    Intel_Df::drupal_set_message($msg);;
+    Intel_Df::drupal_set_message($msg);
+    */
   }
 
   
@@ -496,13 +532,14 @@ final class Intel_Addthis {
       'mode' => 'valued',
       //'valued_event' => 1,
       'value' => 10,
-      //'selector' => '.io-social-share-track',
+      'selector' => '.addthis-smartlayers',
       'on_event' => 'click',
       'enable' => 1,
       'overridable' => array(
         'selector' => 1,
       ),
       'social_action' => 'share',
+      'plugin_un' => $this->plugin_un,
       //'js_setting' => 1,
     );
     
@@ -520,6 +557,7 @@ final class Intel_Addthis {
         'selector' => 1,
       ),
       'social_action' => 'follow',
+      'plugin_un' => $this->plugin_un,
       //'js_setting' => 1,
     );
     $event['intel_addthis_clickback_click'] = array(
@@ -536,6 +574,7 @@ final class Intel_Addthis {
         'selector' => 1,
       ),
       'social_action' => 'clickback',
+      'plugin_un' => $this->plugin_un,
       //'js_setting' => 1,
     );
     
@@ -728,5 +767,11 @@ function intel_addthis_uninstall_hook() {
   // remove plugin data from database before plugin is uninstalled
   require_once plugin_dir_path( __FILE__ ) . 'intel_addthis.install.php';
   intel_addthis_uninstall();
+
+  // check if Intel is active
+  if (is_callable('intel_uninstall_plugin')) {
+    // cleans up intel plugin data
+    intel_uninstall_plugin('intel_addthis');
+  }
 }
 register_uninstall_hook( __FILE__, 'intel_addthis_uninstall_hook' );
