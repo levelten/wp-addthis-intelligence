@@ -8,7 +8,7 @@
 * that starts the plugin.
 *
 * @link              getlevelten.com/blog/tom
-* @since             1.0.0
+* @since             1.0.1.0-dev
 * @package           Intelligence
 *
 * @wordpress-plugin
@@ -30,7 +30,7 @@ if ( ! defined( 'WPINC' ) ) {
   die;
 }
 
-define('INTEL_ADDTHIS_VER', '1.0.0');
+define('INTEL_ADDTHIS_VER', '1.0.1.0-dev');
 
 /**
  * Class Intel_Example
